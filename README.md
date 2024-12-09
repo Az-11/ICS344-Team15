@@ -1,4 +1,4 @@
-# ICS344 Project: Offensive Security, Cyber Deception, and SIEM
+# ICS344 Project: Commands of Phase 1,2 & 3
 
 This project demonstrates offensive security techniques, cyber deception using honeypots, and Security Information and Event Management (SIEM) analysis. The targeted service is **HTTP**, the honeypots are **StrutsHoneypot** and **Cowrie**, and the SIEM platform used is **Wazuh**.
 
